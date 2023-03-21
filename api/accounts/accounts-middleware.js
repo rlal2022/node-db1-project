@@ -3,6 +3,7 @@ const db = require("../../data/db-config");
 
 async function checkAccountPayload(req, res, next) {
   const { name, budget } = req.body;
+  const error = { status: 400 };
   if (name === undefined || budget === undefined) {
     res.status(400).json({ message: "name and budget are required" });
   } else if (name.trim().length < 3 || name.trim().length > 100) {
@@ -39,18 +40,10 @@ async function checkAccountId(req, res, next) {
   if (!account) {
     next({ status: 404, message: "account not found" });
   } else {
+    req.account = account;
     next();
   }
 }
-
-// function logger(req, res, next) {
-//   console.log({
-//     time: new Date().toLocaleString(),
-//     method: req.method,
-//     url: req.originalUrl,
-//   });
-//   next();
-// }
 
 module.exports = {
   checkAccountPayload,
