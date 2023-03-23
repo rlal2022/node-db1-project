@@ -3,7 +3,7 @@ const db = require("../../data/db-config");
 
 async function checkAccountPayload(req, res, next) {
   const { name, budget } = req.body;
-  const error = { status: 400 };
+  // const error = { status: 400 };
   if (name === undefined || budget === undefined) {
     res.status(400).json({ message: "name and budget are required" });
   } else if (name.trim().length < 3 || name.trim().length > 100) {
@@ -17,6 +17,7 @@ async function checkAccountPayload(req, res, next) {
       .status(400)
       .json({ message: "budget of account is too large or too small" });
   } else {
+    req.name = name.trim();
     next();
   }
 }
@@ -29,6 +30,8 @@ async function checkAccountNameUnique(req, res, next) {
 
     if (checkName) {
       res.status(400).json({ message: "that name is taken" });
+    } else {
+      next();
     }
   } catch (err) {
     next(err);
